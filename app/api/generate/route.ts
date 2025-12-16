@@ -14,7 +14,7 @@ export async function POST(req: Request) {
 
     // Build the request based on whether an image is attached
     const generateOptions = {
-      model: google("gemini-2.0-flash-exp"),
+      model: google("gemini-3-pro-image-preview"),
       providerOptions: {
         google: { responseModalities: ["TEXT", "IMAGE"] },
       },

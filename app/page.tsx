@@ -96,7 +96,7 @@ export default function Page() {
     const extension = imageMimeType?.split("/")[1] || "png";
     const link = document.createElement("a");
     link.href = image;
-    link.download = `pixelflow-${Date.now()}.${extension}`;
+    link.download = `ai-image-${Date.now()}.${extension}`;
     link.click();
   };
 
