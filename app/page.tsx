@@ -6,47 +6,13 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   IconArrowRight,
   IconBrandGithub,
-  IconSparkles,
   IconPaperclip,
   IconMessage,
-  IconChevronRight,
   IconLoader2,
   IconDownload,
   IconX,
 } from "@tabler/icons-react";
-
-const examples = [
-  {
-    id: 1,
-    title: "Mystical Forest",
-    prompt: "A mystical forest at twilight with bioluminescent plants",
-    gradient: "from-emerald-600 to-teal-700",
-  },
-  {
-    id: 2,
-    title: "Space Station",
-    prompt: "Futuristic space station orbiting a ringed planet",
-    gradient: "from-violet-600 to-purple-700",
-  },
-  {
-    id: 3,
-    title: "Ancient Temple",
-    prompt: "Ancient temple ruins overgrown with cherry blossoms",
-    gradient: "from-rose-600 to-pink-700",
-  },
-  {
-    id: 4,
-    title: "Steampunk Airship",
-    prompt: "Steampunk airship flying through golden clouds at sunset",
-    gradient: "from-amber-600 to-orange-700",
-  },
-  {
-    id: 5,
-    title: "Crystal Cave",
-    prompt: "Crystal cave with prismatic light reflections",
-    gradient: "from-blue-600 to-indigo-700",
-  },
-];
+import { ExampleGallery } from "@/components/example-gallery";
 
 export default function Page() {
   const [prompt, setPrompt] = useState("");
@@ -343,62 +309,19 @@ export default function Page() {
           </div>
         </section>
 
-        {/* Templates Section */}
+        {/* Examples Section */}
         <section className="py-16 sm:py-24 px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-              <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-white mb-1">
-                  Example Pictures
-                </h2>
-                <p className="text-white/50 text-xs sm:text-sm">
-                  See what other people made with Reid.
-                </p>
-              </div>
-              <Button
-                variant="ghost"
-                className="text-white/60 hover:text-white hover:bg-white/5 w-fit"
-              >
-                View all
-                <IconChevronRight className="size-4 ml-1" />
-              </Button>
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-8">
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
+                Pictures Made with Reid AI
+              </h2>
+              <p className="text-white/50 text-xs sm:text-sm">
+                See what other people made with Reid. Click to use the prompt.
+              </p>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-              {examples.map((example, index) => (
-                <button
-                  key={example.id}
-                  onClick={() => handleExampleClick(example.prompt)}
-                  className={`
-                    group relative aspect-[4/3] rounded-xl overflow-hidden 
-                    border border-white/10 hover:border-white/20
-                    transition-all duration-300 hover:scale-[1.02]
-                    animate-in fade-in slide-in-from-bottom-4 duration-500
-                  `}
-                  style={{ animationDelay: `${index * 50}ms`, animationFillMode: "backwards" }}
-                >
-                  {/* Gradient Background */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${example.gradient} opacity-80`} />
-                  
-                  {/* Overlay on hover */}
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
-
-                  {/* Content */}
-                  <div className="relative z-10 h-full flex flex-col items-start justify-end p-3 sm:p-4">
-                    <span className="text-white font-medium text-xs sm:text-sm">
-                      {example.title}
-                    </span>
-                  </div>
-
-                  {/* Top right indicator */}
-                  <div className="absolute top-2 right-2 sm:top-3 sm:right-3 flex items-center gap-1.5">
-                    <div className="px-1.5 sm:px-2 py-0.5 rounded bg-black/30 backdrop-blur-sm text-white/80 text-[10px] sm:text-xs">
-                      AI
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
+            <ExampleGallery onSelectPrompt={handleExampleClick} />
           </div>
         </section>
 
