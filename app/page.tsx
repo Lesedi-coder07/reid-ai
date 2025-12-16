@@ -144,13 +144,13 @@ export default function Page() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen relative overflow-x-hidden">
       {/* Gradient Background */}
       <div className="fixed inset-0 bg-[#0a0a0a]" />
-      <div className="fixed inset-0 overflow-hidden">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
         {/* Main gradient orb */}
         <div 
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/3 w-[900px] h-[900px] rounded-full opacity-80"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/3 w-[min(900px,200vw)] h-[min(900px,200vw)] rounded-full opacity-80"
           style={{
             background: "radial-gradient(ellipse at center, rgba(251, 146, 60, 0.5) 0%, rgba(236, 72, 153, 0.4) 30%, rgba(59, 130, 246, 0.3) 60%, transparent 70%)",
             filter: "blur(60px)",
@@ -158,7 +158,7 @@ export default function Page() {
         />
         {/* Secondary glow */}
         <div 
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/4 w-[600px] h-[400px] rounded-full opacity-60"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/4 w-[min(600px,150vw)] h-[min(400px,100vw)] rounded-full opacity-60"
           style={{
             background: "radial-gradient(ellipse at center, rgba(251, 146, 60, 0.6) 0%, rgba(249, 115, 22, 0.4) 40%, transparent 70%)",
             filter: "blur(40px)",
@@ -194,34 +194,34 @@ export default function Page() {
         <section className="min-h-screen flex flex-col items-center justify-center px-4 pt-16">
           <div className="max-w-4xl mx-auto text-center space-y-8">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm animate-in fade-in slide-in-from-bottom-4 duration-700">
-              <img src="/sulta-logo.png" alt="Sulta Tech" className="size-5 rounded" />
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs sm:text-sm animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <img src="/sulta-logo.png" alt="Sulta Tech" className="size-4 sm:size-5 rounded flex-shrink-0" />
               <span className="text-white/80">Backed by <a href="https://sultatech.com" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white cursor-pointer transition-colors">Sulta Tech</a></span>
-              <IconArrowRight className="size-4 text-white/60" />
+              <IconArrowRight className="size-3.5 sm:size-4 text-white/60 flex-shrink-0" />
             </div>
 
             {/* Main Headline */}
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-none animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-none animate-in fade-in slide-in-from-bottom-4 duration-700">
               <span className="text-white">Create something</span>
               <br />
               <span className="bg-linear-to-r from-orange-400 via-pink-500 to-violet-500 bg-clip-text text-transparent">Beautiful</span>
             </h1>
 
             {/* Subheadline */}
-            <p className="text-lg sm:text-xl text-white/60 max-w-2xl mx-auto leading-relaxed animate-in fade-in slide-in-from-bottom-4 duration-700">
-              Transform your ideas into realistic images by describing what you imagine
+            <p className="text-base sm:text-lg md:text-xl text-white/60 max-w-2xl mx-auto leading-relaxed px-2 animate-in fade-in slide-in-from-bottom-4 duration-700">
+              Transform your ideas into realistic images by describing what you want
             </p>
 
             {/* Chat Input Box */}
             <div className="w-full max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
-              <div className="relative rounded-2xl bg-[#1a1a1a] border border-white/10 p-4 shadow-2xl">
+              <div className="relative rounded-2xl bg-[#1a1a1a] border border-white/10 p-3 sm:p-4 shadow-2xl">
                 <Textarea
                   ref={inputRef}
                   placeholder="Describe the image you want to create..."
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  className="min-h-[80px] max-h-[200px] resize-none bg-transparent border-0 text-white placeholder:text-white/40 focus-visible:ring-0 focus-visible:ring-offset-0 text-base p-0"
+                  className="min-h-[60px] sm:min-h-[80px] max-h-[200px] resize-none bg-transparent border-0 text-white placeholder:text-white/40 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm sm:text-base p-0"
                   disabled={isLoading}
                 />
                 
@@ -232,7 +232,7 @@ export default function Page() {
                       <img
                         src={attachedImagePreview}
                         alt="Attached"
-                        className="h-16 w-16 object-cover rounded-lg border border-white/10"
+                        className="h-12 w-12 sm:h-16 sm:w-16 object-cover rounded-lg border border-white/10"
                       />
                       <button
                         onClick={removeAttachedImage}
@@ -246,11 +246,11 @@ export default function Page() {
                 )}
 
                 {/* Bottom toolbar */}
-                <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/5">
-                  <div className="flex items-center gap-2">
-                    <label className={`inline-flex items-center h-8 px-3 text-sm text-white/60 hover:text-white hover:bg-white/10 rounded-lg cursor-pointer transition-colors ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}>
-                      <IconPaperclip className="size-4 mr-1.5" />
-                      {attachedImage ? "Change" : "Attach"}
+                <div className="flex items-center justify-between gap-2 mt-3 pt-3 border-t border-white/5">
+                  <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+                    <label className={`inline-flex items-center h-8 px-2 sm:px-3 text-xs sm:text-sm text-white/60 hover:text-white hover:bg-white/10 rounded-lg cursor-pointer transition-colors flex-shrink-0 ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}>
+                      <IconPaperclip className="size-4 sm:mr-1.5" />
+                      <span className="hidden sm:inline">{attachedImage ? "Change" : "Attach"}</span>
                       <input
                         type="file"
                         accept="image/*"
@@ -261,15 +261,15 @@ export default function Page() {
                    
                   </div>
                   
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-8 px-3 text-white/60 hover:text-white hover:bg-white/10 rounded-lg"
+                      className="h-8 px-2 sm:px-3 text-white/60 hover:text-white hover:bg-white/10 rounded-lg"
                       disabled
                     >
-                      <IconMessage className="size-4 mr-1.5" />
-                      Chat
+                      <IconMessage className="size-4 sm:mr-1.5" />
+                      <span className="hidden sm:inline">Chat</span>
                     </Button>
                     <Button
                       onClick={generateImage}
@@ -344,27 +344,27 @@ export default function Page() {
         </section>
 
         {/* Templates Section */}
-        <section className="py-24 px-4">
+        <section className="py-16 sm:py-24 px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
               <div>
-                <h2 className="text-2xl font-bold text-white mb-1">
+                <h2 className="text-xl sm:text-2xl font-bold text-white mb-1">
                   Example Pictures
                 </h2>
-                <p className="text-white/50 text-sm">
+                <p className="text-white/50 text-xs sm:text-sm">
                   See what other people made with Reid.
                 </p>
               </div>
               <Button
                 variant="ghost"
-                className="text-white/60 hover:text-white hover:bg-white/5"
+                className="text-white/60 hover:text-white hover:bg-white/5 w-fit"
               >
                 View all
                 <IconChevronRight className="size-4 ml-1" />
               </Button>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
               {examples.map((example, index) => (
                 <button
                   key={example.id}
@@ -384,15 +384,15 @@ export default function Page() {
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
 
                   {/* Content */}
-                  <div className="relative z-10 h-full flex flex-col items-start justify-end p-4">
-                    <span className="text-white font-medium text-sm">
+                  <div className="relative z-10 h-full flex flex-col items-start justify-end p-3 sm:p-4">
+                    <span className="text-white font-medium text-xs sm:text-sm">
                       {example.title}
                     </span>
                   </div>
 
                   {/* Top right indicator */}
-                  <div className="absolute top-3 right-3 flex items-center gap-1.5">
-                    <div className="px-2 py-0.5 rounded bg-black/30 backdrop-blur-sm text-white/80 text-xs">
+                  <div className="absolute top-2 right-2 sm:top-3 sm:right-3 flex items-center gap-1.5">
+                    <div className="px-1.5 sm:px-2 py-0.5 rounded bg-black/30 backdrop-blur-sm text-white/80 text-[10px] sm:text-xs">
                       AI
                     </div>
                   </div>
@@ -403,14 +403,14 @@ export default function Page() {
         </section>
 
         {/* Footer */}
-        <footer className="py-12 px-4 border-t border-white/5">
+        <footer className="py-8 sm:py-12 px-4 border-t border-white/5">
           <div className="max-w-6xl mx-auto">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between sm:gap-6">
               <div className="flex items-center gap-2">
                 
                 <span className="font-semibold text-white">Reid AI</span>
               </div>
-              <p className="text-sm text-white/40 text-center">
+              <p className="text-xs sm:text-sm text-white/40 text-center">
                 Built by Sulta Tech. Open source and free to use.
               </p>
               <div className="flex items-center gap-4">
