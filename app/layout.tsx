@@ -23,7 +23,9 @@ export const metadata: Metadata = {
   title: "Reid AI | AI Image Generator",
   description: "Transform your ideas into stunning visuals with Reid AI. Built by Sulta Tech using AI SDK 5 for next-generation image creation.",
   keywords: ["AI", "image generator", "Nano Banana Pro", "AI SDK", "text to image"],
-  icons: "https://reid.sultatech.com/sulta-logo.png",
+  icons:{ 
+    icon:"https://reid.sultatech.com/sulta-logo.png"
+  },
 };
 
 export default function RootLayout({
