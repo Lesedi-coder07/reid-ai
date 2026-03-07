@@ -1,352 +1,369 @@
-"use client";
-
-import { useState, useRef } from "react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import Image from "next/image";
+import Link from "next/link";
 import {
   IconArrowRight,
   IconBrandGithub,
-  IconPaperclip,
-  IconMessage,
-  IconLoader2,
   IconDownload,
-  IconX,
+  IconPaperclip,
+  IconRefresh,
 } from "@tabler/icons-react";
 import { ExampleGallery } from "@/components/example-gallery";
 
+const featureCards = [
+  {
+    eyebrow: "Chat-native",
+    title: "Iterate on images the same way you iterate on copy.",
+    body: "Keep the same thread alive while you push composition, lighting, styling, and polish without re-explaining the whole brief.",
+  },
+  {
+    eyebrow: "Reference-aware",
+    title: "Start from a prompt or seed the conversation with an image.",
+    body: "Drop in a reference, generate the first pass, then keep revising from the latest output so the thread stays coherent.",
+  },
+  {
+    eyebrow: "Built to ship",
+    title: "Move from concept frames to campaign-ready visuals.",
+    body: "Use one space for exploration, art direction, quick variants, and final image selection before handing assets downstream.",
+  },
+];
+
 export default function Page() {
-  const [prompt, setPrompt] = useState("");
-  const [image, setImage] = useState<string | null>(null);
-  const [imageMimeType, setImageMimeType] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [attachedImage, setAttachedImage] = useState<string | null>(null);
-  const [attachedImagePreview, setAttachedImagePreview] = useState<string | null>(null);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-
-  const generateImage = async () => {
-    if (!prompt.trim()) return;
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          prompt,
-          image: attachedImage || undefined,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to generate image");
-      }
-
-      setImage(`data:${data.mimeType};base64,${data.image}`);
-      setImageMimeType(data.mimeType);
-      // Clear attached image after successful generation
-      removeAttachedImage();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const downloadImage = () => {
-    if (!image) return;
-    const extension = imageMimeType?.split("/")[1] || "png";
-    const link = document.createElement("a");
-    link.href = image;
-    link.download = `ai-image-${Date.now()}.${extension}`;
-    link.click();
-  };
-
-  const handleExampleClick = (examplePrompt: string) => {
-    setPrompt(examplePrompt);
-    inputRef.current?.focus();
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      generateImage();
-    }
-  };
-
-  const clearResult = () => {
-    setImage(null);
-    setImageMimeType(null);
-    setError(null);
-  };
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      setError("Please select an image file");
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      // Extract base64 data (remove the data:image/...;base64, prefix)
-      const base64 = result.split(",")[1];
-      setAttachedImage(base64);
-      setAttachedImagePreview(result);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const removeAttachedImage = () => {
-    setAttachedImage(null);
-    setAttachedImagePreview(null);
-  };
-
   return (
-    <div className="min-h-screen relative overflow-x-hidden">
-      {/* Gradient Background */}
-      <div className="fixed inset-0 bg-[#0a0a0a]" />
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        {/* Main gradient orb */}
-        <div 
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/3 w-[min(900px,200vw)] h-[min(900px,200vw)] rounded-full opacity-80"
-          style={{
-            background: "radial-gradient(ellipse at center, rgba(251, 146, 60, 0.5) 0%, rgba(236, 72, 153, 0.4) 30%, rgba(59, 130, 246, 0.3) 60%, transparent 70%)",
-            filter: "blur(60px)",
-          }}
-        />
-        {/* Secondary glow */}
-        <div 
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/4 w-[min(600px,150vw)] h-[min(400px,100vw)] rounded-full opacity-60"
-          style={{
-            background: "radial-gradient(ellipse at center, rgba(251, 146, 60, 0.6) 0%, rgba(249, 115, 22, 0.4) 40%, transparent 70%)",
-            filter: "blur(40px)",
-          }}
-        />
-      </div>
+    <div className="min-h-screen overflow-x-hidden bg-[#090b0f] text-white">
+      <div className="fixed inset-0 bg-[radial-gradient(circle_at_top,rgba(53,95,181,0.18),transparent_26%),radial-gradient(circle_at_left,rgba(249,115,22,0.08),transparent_22%),linear-gradient(90deg,rgba(255,255,255,0.02)_0%,transparent_14%,transparent_86%,rgba(255,255,255,0.02)_100%)]" />
 
-      {/* Content */}
       <div className="relative z-10">
-        {/* Navigation */}
-        <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-black/20 backdrop-blur-xl">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
-              <div className="flex items-center gap-2">
-               
-                <span className="text-xl font-bold tracking-tight text-white">Reid AI</span>
+        <header className="sticky top-0 z-50 border-b border-white/6 bg-[#090b0f]/70 backdrop-blur-2xl">
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-6 lg:px-8">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04]">
+                <span className="text-sm font-medium text-white">R</span>
               </div>
-              <div className="flex items-center gap-4">
-                <a
-                  href="https://github.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-white/60 hover:text-white transition-colors"
-                >
-                  <IconBrandGithub className="size-5" />
-                </a>
+              <div className="min-w-0">
+                <p className="text-xs uppercase tracking-[0.28em] text-white/35">
+                  Reid AI
+                </p>
+                <p className="hidden text-sm text-white/70 sm:block">
+                  Conversational image generation
+                </p>
               </div>
+            </div>
+
+            <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+              <a
+                href="https://github.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-white/60 transition-colors hover:bg-white/[0.05] hover:text-white"
+              >
+                <IconBrandGithub className="size-5" />
+              </a>
+              <Link
+                href="/studio"
+                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white px-3 py-2 text-sm font-medium text-black transition-colors hover:bg-white/90 sm:px-4"
+              >
+                <span className="sm:hidden">Studio</span>
+                <span className="hidden sm:inline">Open Studio</span>
+                <IconArrowRight className="size-4" />
+              </Link>
             </div>
           </div>
-        </nav>
+        </header>
 
-        {/* Hero Section */}
-        <section className="min-h-screen flex flex-col items-center justify-center px-4 pt-16">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs sm:text-sm animate-in fade-in slide-in-from-bottom-4 duration-700">
-              <img src="/sulta-logo.png" alt="Sulta Tech" className="size-4 sm:size-5 rounded flex-shrink-0" />
-              <span className="text-white/80">Backed by <a href="https://sultatech.com" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white cursor-pointer transition-colors">Sulta Tech</a></span>
-              <IconArrowRight className="size-3.5 sm:size-4 text-white/60 flex-shrink-0" />
-            </div>
-
-            {/* Main Headline */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-none animate-in fade-in slide-in-from-bottom-4 duration-700">
-              <span className="text-white">Create something</span>
-              <br />
-              <span className="bg-linear-to-r from-orange-400 via-pink-500 to-violet-500 bg-clip-text text-transparent">Beautiful</span>
-            </h1>
-
-            {/* Subheadline */}
-            <p className="text-base sm:text-lg md:text-xl text-white/60 max-w-2xl mx-auto leading-relaxed px-2 animate-in fade-in slide-in-from-bottom-4 duration-700">
-              Transform your ideas into realistic images by describing what you want
-            </p>
-
-            {/* Chat Input Box */}
-            <div className="w-full max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
-              <div className="relative rounded-2xl bg-[#1a1a1a] border border-white/10 p-3 sm:p-4 shadow-2xl">
-                <Textarea
-                  ref={inputRef}
-                  placeholder="Describe the image you want to create..."
-                  value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  className="min-h-[60px] sm:min-h-[80px] max-h-[200px] resize-none bg-transparent border-0 text-white placeholder:text-white/40 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm sm:text-base p-0"
-                  disabled={isLoading}
-                />
-                
-                {/* Attached Image Preview */}
-                {attachedImagePreview && (
-                  <div className="flex items-center gap-2 mb-3 pb-3 border-b border-white/5">
-                    <div className="relative group">
-                      <img
-                        src={attachedImagePreview}
-                        alt="Attached"
-                        className="h-12 w-12 sm:h-16 sm:w-16 object-cover rounded-lg border border-white/10"
-                      />
-                      <button
-                        onClick={removeAttachedImage}
-                        className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <IconX className="size-3" />
-                      </button>
-                    </div>
-                    <span className="text-white/50 text-xs">Reference image attached</span>
-                  </div>
-                )}
-
-                {/* Bottom toolbar */}
-                <div className="flex items-center justify-between gap-2 mt-3 pt-3 border-t border-white/5">
-                  <div className="flex items-center gap-1 sm:gap-2 min-w-0">
-                    <label className={`inline-flex items-center h-8 px-2 sm:px-3 text-xs sm:text-sm text-white/60 hover:text-white hover:bg-white/10 rounded-lg cursor-pointer transition-colors flex-shrink-0 ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}>
-                      <IconPaperclip className="size-4 sm:mr-1.5" />
-                      <span className="hidden sm:inline">{attachedImage ? "Change" : "Attach"}</span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileSelect}
-                        className="hidden"
-                      />
-                    </label>
-                   
-                  </div>
-                  
-                  <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-8 px-2 sm:px-3 text-white/60 hover:text-white hover:bg-white/10 rounded-lg"
-                      disabled
-                    >
-                      <IconMessage className="size-4 sm:mr-1.5" />
-                      <span className="hidden sm:inline">Chat</span>
-                    </Button>
-                    <Button
-                      onClick={generateImage}
-                      disabled={isLoading || !prompt.trim()}
-                      size="sm"
-                      className="h-8 w-8 p-0 rounded-full bg-white/10 hover:bg-white/20 text-white disabled:opacity-30"
-                    >
-                      {isLoading ? (
-                        <IconLoader2 className="size-4 animate-spin" />
-                      ) : (
-                        <IconArrowRight className="size-4 rotate-[-90deg]" />
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Error Display */}
-            {error && (
-              <div className="max-w-2xl mx-auto p-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm animate-in fade-in duration-300">
-                {error}
-              </div>
-            )}
-
-            {/* Generated Image Result */}
-            {image && (
-              <div className="w-full max-w-2xl mx-auto animate-in fade-in zoom-in-95 duration-500">
-                <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-[#1a1a1a]">
-                  <div className="absolute top-4 right-4 z-10 flex gap-2">
-                    <Button
-                      onClick={downloadImage}
-                      size="sm"
-                      className="h-8 px-3 bg-black/50 hover:bg-black/70 text-white backdrop-blur-sm"
-                    >
-                      <IconDownload className="size-4 mr-1.5" />
-                      Download
-                    </Button>
-                    <Button
-                      onClick={clearResult}
-                      size="sm"
-                      className="h-8 w-8 p-0 bg-black/50 hover:bg-black/70 text-white backdrop-blur-sm"
-                    >
-                      <IconX className="size-4" />
-                    </Button>
-                  </div>
-                  <img
-                    src={image}
-                    alt="Generated image"
-                    className="w-full aspect-square object-cover"
+        <main>
+          <section className="px-4 pb-18 pt-16 sm:px-6 lg:px-8 lg:pt-24">
+            <div className="mx-auto max-w-7xl space-y-14 lg:space-y-18">
+              <div className="space-y-8 lg:mx-auto lg:max-w-5xl lg:text-center">
+                <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-sm text-white/72 lg:mx-auto">
+                  <Image
+                    src="/sulta-logo.png"
+                    alt="Sulta Tech"
+                    width={18}
+                    height={18}
+                    className="rounded"
                   />
+                  Backed by Sulta Tech
+                </div>
+
+                <div className="space-y-5">
+                  <h1 className="max-w-2xl text-5xl font-semibold tracking-tight text-white sm:text-6xl lg:mx-auto lg:max-w-4xl lg:text-7xl">
+                    Generate, refine, and ship images in one conversation.
+                  </h1>
+                  <p className="max-w-xl text-lg leading-8 text-white/58 lg:mx-auto lg:max-w-2xl">
+                    Reid AI turns image generation into a real workflow: threaded
+                    prompts, reference-aware iterations, and a studio built for
+                    moving from rough ideas to polished visuals.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-3 lg:justify-center">
+                  <Link
+                    href="/studio"
+                    className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-medium text-black transition-colors hover:bg-white/90"
+                  >
+                    Launch the studio
+                    <IconArrowRight className="size-4" />
+                  </Link>
+                  <a
+                    href="#examples"
+                    className="inline-flex items-center rounded-full border border-white/10 px-5 py-3 text-sm text-white/72 transition-colors hover:bg-white/[0.05] hover:text-white"
+                  >
+                    View examples
+                  </a>
                 </div>
               </div>
-            )}
 
-            {/* Loading State */}
-            {isLoading && (
-              <div className="w-full max-w-2xl mx-auto animate-in fade-in duration-300">
-                <div className="rounded-2xl border border-white/10 bg-[#1a1a1a] aspect-square flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-orange-500/30 to-pink-500/30 flex items-center justify-center">
-                      <IconLoader2 className="size-8 text-orange-400 animate-spin" />
+              <div className="relative mx-auto w-full max-w-[1480px]">
+                <div className="absolute -inset-8 rounded-[40px] bg-[radial-gradient(circle_at_top,rgba(86,135,237,0.18),transparent_40%),radial-gradient(circle_at_bottom_left,rgba(249,115,22,0.14),transparent_38%)] blur-3xl" />
+                <div className="relative overflow-hidden rounded-[34px] border border-white/10 bg-[#111318] p-3 shadow-[0_50px_160px_rgba(0,0,0,0.48)] sm:p-4 lg:hidden">
+                  <div className="overflow-hidden rounded-[28px] border border-white/8 bg-[#0b0d12]">
+                    <Image
+                      src="/hero/scrr.png"
+                      alt="Reid AI studio product interface"
+                      width={3338}
+                      height={2000}
+                      className="h-auto w-full"
+                      priority
+                    />
+                  </div>
+                </div>
+
+                <div className="relative hidden overflow-hidden rounded-[34px] border border-white/10 bg-[#111318] p-4 shadow-[0_50px_160px_rgba(0,0,0,0.48)] lg:block">
+                  <div className="overflow-hidden rounded-[28px] border border-white/8 bg-[#0b0d12]">
+                    <div className="grid min-h-[760px] grid-cols-[72px_minmax(0,1fr)]">
+                      <div className="flex flex-col items-center justify-between border-r border-white/8 bg-[#14161b]/92 py-4">
+                        <div className="flex flex-col items-center gap-4">
+                          <div className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-sm font-medium text-white">
+                            R
+                          </div>
+                          <div className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 text-2xl text-white/75">
+                            +
+                          </div>
+                          <div className="mt-4 flex flex-col items-center gap-5 text-sm text-white/42">
+                            <span>?</span>
+                            <span>@</span>
+                            <span>[]</span>
+                            <span>&lt;/&gt;</span>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-col items-center gap-4">
+                          <span className="text-sm text-white/40">v</span>
+                          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#d8d4ca] text-sm font-medium text-black">
+                            D
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="relative flex flex-col">
+                        <div className="flex items-center justify-between px-5 py-4">
+                          <div className="inline-flex items-center gap-2 text-lg text-white/82">
+                            <span className="truncate">
+                              Design a bold streetwear campaign poster
+                            </span>
+                            <span className="text-white/40">⌄</span>
+                          </div>
+
+                          <div className="flex items-center gap-3">
+                            <button
+                              type="button"
+                              className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm text-white/62 transition-colors hover:bg-white/[0.05] hover:text-white"
+                            >
+                              <IconRefresh className="size-4" />
+                              Reset
+                            </button>
+                            <button
+                              type="button"
+                              className="rounded-full border border-white/10 px-4 py-2 text-sm text-white/82 transition-colors hover:bg-white/[0.05]"
+                            >
+                              Share
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="flex-1 px-8 pb-44 pt-8">
+                          <div className="mx-auto max-w-[760px] space-y-7">
+                            <div className="flex justify-end">
+                              <div className="max-w-[270px] rounded-[22px] bg-black/78 px-5 py-4 text-lg text-white shadow-[0_18px_42px_rgba(0,0,0,0.36)]">
+                                Design a bold streetwear campaign poster with a single
+                                model and clean editorial framing
+                              </div>
+                            </div>
+
+                            <div className="space-y-4">
+                              <h2 className="font-serif text-[3.2rem] leading-[1.12] text-white/92">
+                                Generated a fresh image from your prompt.
+                              </h2>
+
+                              <div className="flex items-center gap-2 text-white/35">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10">
+                                  <IconPaperclip className="size-4" />
+                                </div>
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10">
+                                  <IconDownload className="size-4" />
+                                </div>
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10">
+                                  <IconRefresh className="size-4" />
+                                </div>
+                              </div>
+
+                              <div className="overflow-hidden rounded-[30px] border border-white/10 bg-[#17181c] shadow-[0_34px_90px_rgba(0,0,0,0.36)]">
+                                <Image
+                                  src="/examples/4.jpeg"
+                                  alt="Streetwear editorial example"
+                                  width={1400}
+                                  height={1020}
+                                  className="w-full object-cover"
+                                />
+                              </div>
+
+                              <div className="flex flex-wrap gap-2">
+                                {[
+                                  "Make it more cinematic.",
+                                  "Keep the composition and change only the lighting.",
+                                  "Push the realism further.",
+                                  "Try a cleaner premium ad look.",
+                                ].map((chip) => (
+                                  <div
+                                    key={chip}
+                                    className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs text-white/55"
+                                  >
+                                    {chip}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="absolute inset-x-6 bottom-5">
+                          <div className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] px-6 py-5 shadow-[0_34px_90px_rgba(0,0,0,0.42)] backdrop-blur-2xl">
+                            <div className="min-h-[92px] text-3xl text-white/28">
+                              Reply...
+                            </div>
+
+                            <div className="mt-4 flex items-center justify-between gap-4">
+                              <div className="flex items-center gap-4 text-white/52">
+                                <div className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 text-2xl">
+                                  +
+                                </div>
+                                <p className="text-base">
+                                  Follow-ups use prior results and any attachments.
+                                </p>
+                              </div>
+
+                              <div className="flex items-center gap-4">
+                                <div className="text-base text-white/62">Reid Image</div>
+                                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-black">
+                                  <IconArrowRight className="size-4 rotate-[-90deg]" />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <p className="mt-3 text-center text-sm text-white/32">
+                            Reid AI can make mistakes. Double-check important image
+                            prompts and outputs.
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <p className="text-white/60 text-sm">
-                      Creating your image...
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="px-4 py-20 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl">
+              <div className="mb-10 max-w-2xl">
+                <p className="text-xs uppercase tracking-[0.28em] text-white/34">
+                  Why Reid
+                </p>
+                <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                  A studio workflow instead of a one-off image box.
+                </h2>
+              </div>
+
+              <div className="grid gap-4 lg:grid-cols-3">
+                {featureCards.map((card) => (
+                  <div
+                    key={card.title}
+                    className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6"
+                  >
+                    <p className="text-xs uppercase tracking-[0.24em] text-white/34">
+                      {card.eyebrow}
+                    </p>
+                    <h3 className="mt-4 text-2xl font-medium leading-tight text-white">
+                      {card.title}
+                    </h3>
+                    <p className="mt-4 text-sm leading-7 text-white/58">
+                      {card.body}
                     </p>
                   </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section id="examples" className="px-4 py-20 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl">
+              <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.28em] text-white/34">
+                    Examples
+                  </p>
+                  <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                    Image directions made inside Reid AI.
+                  </h2>
+                </div>
+                <Link
+                  href="/studio"
+                  className="inline-flex items-center gap-2 text-sm text-white/72 transition-colors hover:text-white"
+                >
+                  Try the studio
+                  <IconArrowRight className="size-4" />
+                </Link>
+              </div>
+
+              <ExampleGallery />
+            </div>
+          </section>
+
+          <section className="px-4 pb-24 pt-8 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-6xl rounded-[36px] border border-white/10 bg-white/[0.04] px-6 py-12 sm:px-10">
+              <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+                <div className="max-w-2xl">
+                  <p className="text-xs uppercase tracking-[0.28em] text-white/34">
+                    Ready to create
+                  </p>
+                  <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                    Move from rough prompt to final visual direction in one thread.
+                  </h2>
+                  <p className="mt-4 text-base leading-8 text-white/58">
+                    Launch the studio, start a prompt, and keep art-directing the
+                    image until it looks right.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-3">
+                  <Link
+                    href="/studio"
+                    className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-medium text-black transition-colors hover:bg-white/90"
+                  >
+                    Open studio
+                    <IconArrowRight className="size-4" />
+                  </Link>
                 </div>
               </div>
-            )}
-          </div>
-        </section>
-
-        {/* Examples Section */}
-        <section className="py-16 sm:py-24 px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
-                Pictures Made with Reid AI
-              </h2>
-              <p className="text-white/50 text-xs sm:text-sm">
-                See what other people made with Reid. Click to use the prompt.
-              </p>
             </div>
+          </section>
+        </main>
 
-            <ExampleGallery onSelectPrompt={handleExampleClick} />
-          </div>
-        </section>
-
-        {/* Footer */}
-        <footer className="py-8 sm:py-12 px-4 border-t border-white/5">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between sm:gap-6">
-              <div className="flex items-center gap-2">
-                
-                <span className="font-semibold text-white">Reid AI</span>
-              </div>
-              <p className="text-xs sm:text-sm text-white/40 text-center">
-                Built by Sulta Tech. Open source and free to use.
-              </p>
-              <div className="flex items-center gap-4">
-                <a
-                  href="https://github.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-white/40 hover:text-white transition-colors"
-                >
-                  <IconBrandGithub className="size-5" />
-                </a>
-              </div>
-            </div>
+        <footer className="border-t border-white/6 px-4 py-8 sm:px-6 lg:px-8">
+          <div className="mx-auto flex max-w-7xl flex-col gap-3 text-sm text-white/42 sm:flex-row sm:items-center sm:justify-between">
+            <p>Reid AI by Sulta Tech.</p>
+            <p>Threaded image generation for concepts, campaigns, and final assets.</p>
           </div>
         </footer>
       </div>
