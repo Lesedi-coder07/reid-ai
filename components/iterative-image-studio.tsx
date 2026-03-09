@@ -505,11 +505,11 @@ export function IterativeImageStudio() {
       <div className="relative z-10 md:pl-[72px]">
         <header className="fixed left-0 right-0 top-0 z-30 border-b border-white/8 bg-[#101114]/88 px-4 py-4 backdrop-blur-xl sm:px-6 md:left-[72px]">
           <div className="flex items-center justify-between">
-            <div className="relative flex min-w-0 items-center gap-2">
+            <div className="relative flex min-w-0 flex-1 items-center justify-center md:justify-start">
               <button
                 type="button"
                 onClick={() => setIsMobileSidebarOpen(true)}
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-white/75 transition-colors hover:bg-white/[0.08] hover:text-white md:hidden"
+                className="absolute left-0 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-white/75 transition-colors hover:bg-white/[0.08] hover:text-white md:hidden"
                 aria-label="Open navigation menu"
               >
                 <IconMenu2 className="size-5" />
@@ -517,7 +517,7 @@ export function IterativeImageStudio() {
               <button
                 type="button"
                 onClick={() => setIsThreadPickerOpen((current) => !current)}
-                className="inline-flex min-w-0 items-center gap-2 rounded-2xl px-3 py-2 text-left text-base text-white/80 transition-colors hover:bg-white/[0.05] hover:text-white sm:text-lg"
+                className="inline-flex min-w-0 max-w-[calc(100vw-7rem)] items-center justify-center gap-2 rounded-2xl px-3 py-2 text-center text-base text-white/80 transition-colors hover:bg-white/[0.05] hover:text-white sm:max-w-[240px] sm:text-lg md:max-w-none md:justify-start md:text-left"
               >
                 <span className="max-w-[180px] truncate sm:max-w-[240px]">
                   {activeThread?.title || "Greeting"}
@@ -641,13 +641,13 @@ export function IterativeImageStudio() {
                     </div>
                   </div>
 
-                  <div className="grid gap-3 sm:grid-cols-3">
+                  <div className="grid gap-2.5 sm:gap-3 sm:grid-cols-3">
                     {STARTER_PROMPTS.map((starterPrompt) => (
                       <button
                         key={starterPrompt}
                         type="button"
                         onClick={() => queuePrompt(starterPrompt)}
-                        className="rounded-[26px] border border-white/10 bg-white/[0.03] px-5 py-5 text-left text-sm leading-6 text-white/68 transition-colors hover:bg-white/[0.06] hover:text-white"
+                        className="rounded-[22px] border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-[13px] leading-5 text-white/68 transition-colors hover:bg-white/[0.06] hover:text-white sm:rounded-[26px] sm:px-5 sm:py-5 sm:text-sm sm:leading-6"
                       >
                         {starterPrompt}
                       </button>
@@ -783,7 +783,7 @@ export function IterativeImageStudio() {
                       key={tweakPrompt}
                       type="button"
                       onClick={() => queuePrompt(tweakPrompt)}
-                      className="rounded-full border border-white/10 bg-[#17181c]/75 px-3 py-1.5 text-xs text-white/55 backdrop-blur-xl transition-colors hover:bg-white/[0.08] hover:text-white"
+                      className="rounded-full border border-white/10 bg-[#17181c]/75 px-2.5 py-1 text-[11px] text-white/55 backdrop-blur-xl transition-colors hover:bg-white/[0.08] hover:text-white sm:px-3 sm:py-1.5 sm:text-xs"
                     >
                       {tweakPrompt}
                     </button>
@@ -797,7 +797,7 @@ export function IterativeImageStudio() {
                 </div>
               ) : null}
 
-              <div className="rounded-[26px] border border-white/10 bg-[#111111] px-4 py-3 shadow-[0_32px_90px_rgba(0,0,0,0.4)] sm:rounded-[30px] sm:px-6 sm:py-4">
+              <div className="rounded-[22px] border border-white/10 bg-[#111111] px-3 py-2.5 shadow-[0_32px_90px_rgba(0,0,0,0.4)] sm:rounded-[30px] sm:px-6 sm:py-4">
                 <Textarea
                   ref={inputRef}
                   value={prompt}
@@ -805,13 +805,13 @@ export function IterativeImageStudio() {
                   onKeyDown={handleKeyDown}
                   placeholder="Reply..."
                   disabled={isLoading}
-                  className="min-h-[40px] resize-none border-0 bg-[#111111] p-0 text-[15px] leading-6 text-white placeholder:text-white/32 focus-visible:ring-0 focus-visible:ring-offset-0 sm:min-h-[72px] sm:text-base"
+                  className="min-h-[32px] resize-none border-0 bg-[#111111] p-0 text-sm leading-5 text-white placeholder:text-white/32 focus-visible:ring-0 focus-visible:ring-offset-0 sm:min-h-[72px] sm:text-base sm:leading-6"
                 />
 
-                <div className="mt-3 flex items-center justify-between gap-3 sm:mt-4 sm:flex-wrap sm:gap-4">
-                  <div className="flex min-w-0 items-center gap-3">
-                    <label className="inline-flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/10 text-white/70 transition-colors hover:bg-white/[0.05] hover:text-white">
-                      <IconPlus className="size-5" />
+                <div className="mt-2.5 flex items-center justify-between gap-2.5 sm:mt-4 sm:flex-wrap sm:gap-4">
+                  <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
+                    <label className="inline-flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/10 text-white/70 transition-colors hover:bg-white/[0.05] hover:text-white sm:h-10 sm:w-10">
+                      <IconPlus className="size-4.5 sm:size-5" />
                       <input
                         type="file"
                         accept="image/*"
@@ -832,7 +832,7 @@ export function IterativeImageStudio() {
                   <div className="flex min-w-0 flex-1 items-center justify-end gap-3 sm:w-auto sm:flex-none sm:justify-start sm:gap-4">
                     <button
                       type="button"
-                      className="inline-flex items-center gap-2 text-sm text-white/60"
+                      className="inline-flex items-center gap-1.5 text-[13px] text-white/60 sm:gap-2 sm:text-sm"
                     >
                       Reid Image
                       <IconChevronDown className="size-4" />
@@ -841,7 +841,7 @@ export function IterativeImageStudio() {
                     <Button
                       onClick={() => void submitPrompt()}
                       disabled={isLoading || !prompt.trim()}
-                      className="h-10 w-10 rounded-full bg-white p-0 text-black hover:bg-white/90 sm:h-11 sm:w-11"
+                      className="h-9 w-9 rounded-full bg-white p-0 text-black hover:bg-white/90 sm:h-11 sm:w-11"
                     >
                       {isLoading ? (
                         <IconLoader2 className="size-4 animate-spin" />
