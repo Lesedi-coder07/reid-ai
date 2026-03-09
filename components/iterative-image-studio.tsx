@@ -641,7 +641,7 @@ export function IterativeImageStudio() {
                     </div>
                   </div>
 
-                  <div className="grid gap-2.5 sm:gap-3 sm:grid-cols-3">
+                  <div className="hidden gap-2.5 sm:grid sm:gap-3 sm:grid-cols-3">
                     {STARTER_PROMPTS.map((starterPrompt) => (
                       <button
                         key={starterPrompt}
@@ -777,7 +777,7 @@ export function IterativeImageStudio() {
               ) : null}
 
               {generatedImages.length > 0 ? (
-                <div className="mb-3 flex flex-wrap gap-2">
+                <div className="mb-3 hidden flex-wrap gap-2 sm:flex">
                   {QUICK_TWEAKS.map((tweakPrompt) => (
                     <button
                       key={tweakPrompt}
