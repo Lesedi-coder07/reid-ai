@@ -503,7 +503,7 @@ export function IterativeImageStudio() {
       </aside>
 
       <div className="relative z-10 md:pl-[72px]">
-        <header className="fixed left-0 right-0 top-0 z-30 border-b border-white/8 bg-[#101114]/88 px-4 py-4 backdrop-blur-xl sm:px-6 md:left-[72px]">
+        <header className="fixed left-0 right-0 top-0 z-30 bg-[#101114]/88 px-4 py-4 backdrop-blur-xl sm:px-6 md:left-[72px]">
           <div className="flex items-center justify-between">
             <div className="relative flex min-w-0 flex-1 items-center justify-center md:justify-start">
               <button
